@@ -4,6 +4,8 @@ A personal quick-reference covering core concepts and commands across network en
 
 Built as a single self-contained HTML file with a light theme, grouped sections, and a clickable table of contents.
 
+Sharing with the world in the hope it helps someone else out there focus their pre-interview revision/learning.
+
 ---
 
 ## 📖 View the Cheatsheet
