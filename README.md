@@ -1,6 +1,6 @@
 # Network / VoIP / Linux Engineer Cheatsheet
 
-A personal quick-reference cheatsheet covering core concepts and commands across network engineering, VoIP/UC, monitoring, and Linux/DevOps.
+A personal quick-reference covering core concepts and commands across network engineering, VoIP/UC, monitoring, and Linux/DevOps.
 
 Built as a single self-contained HTML file with a light theme, grouped sections, and a clickable table of contents.
 
@@ -51,4 +51,4 @@ Built as a single self-contained HTML file with a light theme, grouped sections,
 
 ## About
 
-Built and maintained by [Chris Nock](https://www.linkedin.com/in/chrisnock/) — Technical Consultant | Experienced Engineer with nearly 20 years of experience across network engineering, VoIP/UC, compliance recording, and infrastructure.
+Built and maintained by [Chris Nock](https://www.linkedin.com/in/chrisnock/) — Technical Consultant | Experienced Engineer with nearly 20 years of industry experience across network engineering, VoIP/UC, compliance recording, and infrastructure.
