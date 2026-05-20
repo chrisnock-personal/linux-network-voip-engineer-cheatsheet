@@ -279,7 +279,7 @@
         <div class="q">Mnemonic to remember it?</div>
         <div class="a"><strong>"All People Seem To Need Data Processing"</strong> (top to bottom, 7→1)</div>
       </div>
-      <div class="tip">💡 NOC context: most issues live at L1 (physical/link down), L3 (routing), or L7 (app performance)</div>
+      <div class="tip">💡 Most issues in practice live at L1 (physical/link down), L3 (routing problems), or L7 (application performance) — start your diagnosis at the most likely layer for the reported symptom</div>
     </div>
   </div>
 
@@ -322,6 +322,7 @@
         <div class="q">What is a broadcast storm?</div>
         <div class="a">A broadcast frame loops endlessly around a network with no STP protection. Each switch re-floods it, multiplying traffic exponentially until bandwidth is saturated and the network collapses.</div>
       </div>
+      <div class="tip">💡 A broadcast storm is one of those faults that's immediately obvious — the network grinds to a halt and all interfaces light up. If STP is disabled or a port is misconfigured as a trunk, a single loop can take down an entire site in seconds.</div>
     </div>
   </div>
 
@@ -359,7 +360,7 @@
           <strong>5.</strong> Router forwards new frame: src=GW_outgoing_MAC, dst=B_MAC. IP header unchanged.
         </div>
       </div>
-      <div class="tip">💡 Walking through this end-to-end process confidently in an interview is a strong signal of genuine L2/L3 understanding, not just memorised facts.</div>
+      <div class="tip">💡 Being able to walk through this end-to-end packet flow from memory is a strong indicator of genuine L2/L3 understanding — it connects theory to how networks actually behave in practice.</div>
     </div>
   </div>
 
@@ -392,6 +393,7 @@
           <strong>192.168.0.0/16</strong>
         </div>
       </div>
+      <div class="tip">💡 Subnetting is one of the most common verbal questions in any network role. Practice calculating network address, broadcast address, and usable host range from a CIDR like 192.168.10.0/26 without a calculator — it becomes second nature quickly.</div>
     </div>
   </div>
 
@@ -423,6 +425,7 @@
           <strong>Router</strong> — separates both collision and broadcast domains per interface
         </div>
       </div>
+      <div class="tip">💡 A good test of understanding: how many broadcast domains exist on a 48-port switch with 4 VLANs? The answer is 4 — one per VLAN, regardless of port count. Routers always define the boundary.</div>
     </div>
   </div>
 
@@ -450,6 +453,7 @@
         <div class="q">What is the TCP 3-way handshake?</div>
         <div class="a"><strong>SYN</strong> → <strong>SYN-ACK</strong> → <strong>ACK</strong>. Client initiates, server responds, client confirms.</div>
       </div>
+      <div class="tip">💡 Understanding why VoIP uses UDP over TCP is a common question — the key insight is that a retransmitted voice packet arriving 200ms late is worse than no packet at all. A small gap in audio is preferable to the audio freezing while TCP waits for retransmission.</div>
     </div>
   </div>
 
@@ -478,6 +482,7 @@
         <div class="q">What does DHCP do?</div>
         <div class="a">Automatically assigns IP address, subnet mask, default gateway, and DNS to clients. Process: <strong>DORA</strong> — Discover, Offer, Request, Acknowledge.</div>
       </div>
+      <div class="tip">💡 DNS is involved in almost every connectivity fault even when it doesn't look like it. Always verify DNS resolution early in troubleshooting — <code>dig +short hostname</code> and <code>nslookup hostname</code> take seconds and can save hours of chasing the wrong problem.</div>
     </div>
   </div>
 
@@ -506,6 +511,7 @@
         <div class="q">What is OSPF?</div>
         <div class="a">Open Shortest Path First — a link-state routing protocol. Uses Dijkstra's algorithm to find the shortest path. Common in enterprise networks.</div>
       </div>
+      <div class="tip">💡 The routing table is processed longest-prefix-first, not top-to-bottom like an ACL. A /32 host route will always win over a /24 network route regardless of their order in the table — this matters when diagnosing unexpected routing behaviour.</div>
     </div>
   </div>
 
@@ -567,7 +573,7 @@
           — <strong>Prefix filtering</strong> — route-map or prefix-list blocking advertisement or acceptance
         </div>
       </div>
-      <div class="tip">💡 In a NOC context you're more likely to monitor BGP adjacency state and alert on drops than configure it — but understanding attributes helps diagnose why traffic takes unexpected paths.</div>
+      <div class="tip">💡 In most operational roles you're more likely to monitor BGP adjacency state and alert on drops than configure it — but understanding path attributes helps diagnose why traffic takes unexpected or suboptimal paths.</div>
     </div>
   </div>
 
@@ -590,6 +596,7 @@
         <div class="q">What is NAT and why is it used?</div>
         <div class="a">Network Address Translation — maps private IPs to a public IP for internet access. Conserves public IPs and adds a layer of obscurity. <strong>PAT</strong> (overload) is the most common form — many-to-one using port numbers.</div>
       </div>
+      <div class="tip">💡 A very common real-world mistake is forgetting to add a new VLAN to trunk ports between switches. The VLAN can exist on both switches but if it's not in the trunk's allowed list, traffic is silently dropped — always check <code>show interfaces trunk</code> first.</div>
     </div>
   </div>
 
@@ -614,7 +621,8 @@
           <span class="tag tag-green">5060/5061</span> SIP (VoIP)
         </div>
       </div>
-      <div class="tip">💡 You already know SIP/VoIP deeply — if ports come up, that's a strong differentiator</div>
+      
+      <div class="tip">💡 Port numbers are one of the first things checked when diagnosing firewall blocks. Knowing them by heart means you can read a firewall log or ACL hit count and immediately understand what traffic is being affected without looking anything up.</div>
     </div>
   </div>
 
@@ -717,6 +725,7 @@
         <div class="q">What is a DMZ?</div>
         <div class="a">A <strong>Demilitarised Zone</strong> — a network segment sitting between the internet and internal LAN. Public-facing services (web servers, SBCs, mail gateways) live here. Traffic from internet to DMZ is permitted; DMZ to internal LAN is tightly restricted. Limits blast radius if a DMZ host is compromised.</div>
       </div>
+      <div class="tip">💡 The most common ACL mistake is rule ordering — a broad <code>permit any any</code> or <code>deny any any</code> placed before specific rules will silently swallow or block traffic. Always review the full rule set top to bottom, not just the rule you're adding.</div>
     </div>
   </div>
 
@@ -743,6 +752,7 @@
         <div class="q">What is a SIEM?</div>
         <div class="a">Security Information and Event Management — aggregates logs from across the environment, correlates events, and generates alerts. Examples: <strong>Splunk, Elastic SIEM, Microsoft Sentinel, IBM QRadar</strong>.</div>
       </div>
+      <div class="tip">💡 In a monitoring context, security alerts are only as useful as the baseline they're measured against. A single failed login is noise; 500 failed logins from the same IP in 60 seconds is a brute force attempt. Context and rate always matter.</div>
     </div>
   </div>
 
@@ -774,7 +784,7 @@
         <div class="a"><strong>NIDS</strong> — Network-based, monitors traffic on the wire (typically via SPAN/mirror port).<br>
         <strong>HIDS</strong> — Host-based, runs on individual endpoints monitoring local logs, files, and processes.</div>
       </div>
-      <div class="tip">💡 Most modern NGFWs have IPS built in. In a NOC context you'll review IDS/IPS alerts rather than configure them.</div>
+      <div class="tip">💡 Most modern NGFWs have IPS built in. In operational roles you'll typically be reviewing and triaging IDS/IPS alerts rather than configuring the rules themselves.</div>
     </div>
   </div>
 
@@ -804,7 +814,8 @@
           <span class="tag tag-cyan">show monitor session 1</span> Verify config
         </div>
       </div>
-      <div class="tip">💡 Your NetScout and Gigamon experience is directly relevant here — those tools are fed exactly this way. Mention it if SPAN comes up.</div>
+      
+      <div class="tip">💡 One common gotcha with SPAN: the destination port is put into a special monitoring mode and can no longer forward normal traffic. If you accidentally SPAN to an active access port you'll disrupt that device. Always use a dedicated monitoring port.</div>
     </div>
   </div>
 
@@ -865,6 +876,7 @@
           — Use separate voice VLAN to simplify QoS classification
         </div>
       </div>
+      <div class="tip">💡 QoS only matters at points of congestion — on an uncongested link all traffic flows fine regardless of markings. The place to focus is the WAN edge and any uplinks that could become bottlenecks during peak load. Verify DSCP markings are being set and honoured end-to-end with a packet capture.</div>
     </div>
   </div>
 
@@ -897,6 +909,7 @@
           <span class="tag tag-cyan">tcpdump/Wireshark</span> Packet capture
         </div>
       </div>
+      <div class="tip">💡 One of the most effective habits is to ask "what changed?" before diving into technical analysis. The vast majority of network faults follow a recent change — a config push, a firmware update, a new device added. Change management logs are your first stop.</div>
     </div>
   </div>
 
@@ -992,7 +1005,8 @@
           For VoIP: check DSCP in the IP header (should be EF/46 for RTP), verify SDP content in SIP messages, and use <em>Telephony → RTP → Stream Analysis</em> to plot jitter and loss graphically.
         </div>
       </div>
-      <div class="tip">💡 Your NetScout and Gigamon experience is directly relevant here — being able to articulate how TAP/SPAN feeds work, what NetScout's Infinistream does with that traffic, and how you've used DPI to diagnose real-world VoIP and WAN issues is a genuine differentiator in any network or NOC role.</div>
+      
+      <div class="tip">💡 Wireshark's <em>Follow TCP/UDP Stream</em> (right-click a packet → Follow) is one of the most powerful features for DPI — it reassembles and displays the full application-layer conversation in a readable format, which is invaluable for diagnosing protocol-level issues.</div>
     </div>
   </div>
 
@@ -1037,6 +1051,7 @@
           <strong>Congestion</strong> — voice competing with data traffic. Solved with QoS (DSCP marking, traffic prioritisation).
         </div>
       </div>
+      <div class="tip">💡 When diagnosing VoIP quality complaints, always gather objective data before assuming the cause. MOS score, jitter, and packet loss from RTCP reports or a probe give you something concrete to act on rather than chasing a subjective "calls sound bad" report.</div>
     </div>
   </div>
 
@@ -1090,7 +1105,8 @@
           <strong>B2BUA</strong> (Back-to-Back User Agent) — terminates and re-originates both legs of a call. Full control over signalling — used by most PBXs (Avaya, Cisco CUCM, Teams).
         </div>
       </div>
-      <div class="tip">💡 This is your strongest area — if SIP comes up, go deep. Mention experience across Avaya Aura, CUCM, Microsoft Teams/SfB, IPC Unigy, and recorder integrations.</div>
+      
+      <div class="tip">💡 The most important thing to check in any SIP trace is whether the IP addresses in the SDP body match what's reachable from the far end. A mismatch here — usually caused by NAT — is the root cause of the majority of one-way and no-audio faults.</div>
     </div>
   </div>
 
@@ -1143,7 +1159,7 @@
         <div class="q">NAT traversal problems with VoIP</div>
         <div class="a">SIP embeds private IP addresses in the SDP body — when packets pass through NAT, the IP header is rewritten but the SDP content is not, causing the remote end to try sending RTP to an unreachable private IP. Solved by: <strong>STUN, TURN, ICE</strong> (WebRTC), <strong>SBC</strong> (Session Border Controller) which acts as a media/signalling proxy at the network edge, or <strong>ALG</strong> on NAT devices (often causes more problems than it solves).</div>
       </div>
-      <div class="tip">💡 NAT/SBC issues and RTP media path problems are among the most common real-world VoIP faults — your deep packet inspection background with NetScout is directly applicable here.</div>
+      <div class="tip">💡 NAT/SBC issues and RTP media path problems are among the most common real-world VoIP faults </div>
     </div>
   </div>
 
@@ -1253,7 +1269,7 @@
           — Confirm RTP is flowing from the correct source IP/port as negotiated in SDP
         </div>
       </div>
-      <div class="tip">💡 Being able to read a SIP ladder diagram and correlate it with an RTP capture is an advanced skill most NOC candidates won't have — it's a strong differentiator.</div>
+      <div class="tip">💡 Being able to read a SIP ladder diagram and correlate it with an RTP capture gives you a complete picture of both the signalling and media planes simultaneously — the most powerful approach to diagnosing complex VoIP faults.</div>
     </div>
   </div>
 
@@ -1314,6 +1330,7 @@
           <strong>Federation</strong> — allowing presence and messaging between different organisations or platforms (e.g. Teams-to-Teams external, or Teams-to-Zoom).
         </div>
       </div>
+      <div class="tip">💡 In Teams Direct Routing deployments, the SBC is the most critical single point of failure — it handles all PSTN connectivity. Always verify SBC health (TLS connectivity to Microsoft, active trunk to carrier) before investigating elsewhere when calls fail to reach external numbers.</div>
     </div>
   </div>
 
@@ -1329,24 +1346,16 @@
       <div class="qa">
         <div class="q">Key platforms and vendors</div>
         <div class="a">
-          <strong>IPC Systems</strong> — dominant vendor. Platforms include <strong>IQ/MAX turrets</strong>, <strong>Alliance/Unigy</strong> (VoIP-based infrastructure), and the BT Radianz network for interdealer connectivity.<br><br>
-          <strong>BT Syntegra / Speakerbus</strong> — legacy turret infrastructure.<br><br>
-          <strong>Verba / Verint / NICE NTR</strong> — compliance recording platforms that integrate with trading voice infrastructure.<br><br>
-          <strong>Broadway Technology, Cloud9</strong> — newer cloud-based trading comms platforms.
+          <strong>IPC Systems</strong> — leading turret vendor. IQ/MAX turret hardware, Alliance/Unigy VoIP-based infrastructure, and the IPC private interdealer network.<br><br>
+          <strong>BT</strong> — <strong>BT ITS</strong> (legacy turret infrastructure) and <strong>BT Trade</strong> (formerly IP Trade) for VoIP-based trading communications; also operates the BT Radianz private financial network for interdealer connectivity.<br><br>
+          <strong>Speakerbus</strong> — turret systems and intercom infrastructure, widely deployed in trading environments.<br><br>
+          <strong>Cloud9 Technologies</strong> — cloud-native trading communications platform. WebRTC-based, API-driven, increasingly adopted as an IPC/BT alternative.<br><br>
+          <strong>Verint</strong> — enterprise compliance recording and workforce engagement platform, widely used in financial services.<br><br>
+          <strong>Verint Financial Compliance (formerly Verba)</strong> — compliance recording platform with strong Microsoft Teams and trading voice integration.<br><br>
+          <strong>NICE</strong> — compliance recording and analytics platform, widely deployed in regulated financial trading environments.
         </div>
       </div>
-      <hr class="divider">
-      <div class="qa">
-        <div class="q">IPC Unigy architecture</div>
-        <div class="a">
-          IPC's <strong>Unigy</strong> platform is an IP-based trading communications system replacing legacy TDM turret infrastructure.<br><br>
-          <strong>Unigy Manager</strong> — central call control / administration server<br>
-          <strong>Unigy Connect</strong> — media gateway, PSTN/interdealer connectivity<br>
-          <strong>IQ/MAX Turrets</strong> — endpoints, typically hardphone but also softclient<br>
-          <strong>BT Radianz / IPC network</strong> — private interdealer network connecting firms<br><br>
-          Uses SIP internally but with proprietary extensions for turret features (hoot lines, group calls, intercom).
-        </div>
-      </div>
+
       <hr class="divider">
       <div class="qa">
         <div class="q">Hoot-and-holler / open lines</div>
@@ -1360,8 +1369,7 @@
           — <strong>100% capture</strong> — no calls missed, including hoot lines<br>
           — <strong>Tamper-evident storage</strong> — recordings must be unalterable<br>
           — <strong>Fast retrieval</strong> — regulators can demand recordings within hours<br>
-          — <strong>Recording assurance</strong> — systems must verify and alert if recording fails<br><br>
-          Your <strong>Automated Verification / Walk the Floor</strong> work directly addresses the recording assurance requirement — this is a critical and specialised capability.
+          — <strong>Recording assurance</strong> — systems must verify and alert if recording fails
         </div>
       </div>
       <hr class="divider">
@@ -1369,7 +1377,8 @@
         <div class="q">Walk the Floor — what is it?</div>
         <div class="a">An automated test that simulates calls across the trading floor infrastructure — dialling each turret line, verifying the call connects and is recorded correctly, and alerting on failures. Replaces the manual process of physically walking the floor testing each line. Critical for compliance assurance and pre-market open verification.</div>
       </div>
-      <div class="tip">💡 Very few people outside specialist firms understand trading voice at this depth. If it comes up, this is a genuine differentiator — even if Arxion doesn't have trading floor clients today, this background signals reliability engineering instincts.</div>
+      
+      <div class="tip">💡 Compliance recording in financial environments is a regulatory requirement, not a nice-to-have. A recording failure that goes undetected is a regulatory breach. Automated verification and recording assurance systems exist specifically to catch these failures before a regulator does.</div>
     </div>
   </div>
 
@@ -1444,7 +1453,7 @@
           <strong>Datadog / Dynatrace</strong> — SaaS observability, metrics/logs/traces unified<br>
           <strong>Elastic Stack (ELK)</strong> — Elasticsearch, Logstash, Kibana — log aggregation and search<br>
           <strong>Splunk</strong> — enterprise log platform, SIEM capabilities<br>
-          <strong>SolarWinds NPM</strong> — network performance monitoring, common in enterprise NOC environments
+          <strong>SolarWinds NPM</strong> — network performance monitoring, widely used in enterprise environments
         </div>
       </div>
       <hr class="divider">
@@ -1462,15 +1471,16 @@
         <div class="q">What is synthetic monitoring?</div>
         <div class="a">Proactively simulating user transactions or network paths on a schedule to detect failures before real users do. Examples: scripted login flows, HTTP health checks, SIP OPTIONS pings to VoIP endpoints, ICMP probes along a network path. Complements reactive alerting from real traffic.</div>
       </div>
-      <div class="tip">💡 Your Empirix work maps directly to this — Empirix is a synthetic/active monitoring platform. Frame it in these terms: proactive testing, baseline measurement, anomaly detection before users are impacted.</div>
+      
+      <div class="tip">💡 The difference between a good monitoring setup and a great one is usually alert quality, not quantity. Fewer, higher-confidence alerts with clear ownership and runbooks are far more effective than hundreds of noisy notifications that engineers learn to ignore.</div>
     </div>
   </div>
 
 
 
-  <!-- NOC SPECIFIC -->
+  <!-- OPERATIONS & SERVICE MANAGEMENT -->
   <div class="card">
-    <div class="card-header cyan"><span class="dot"></span>NOC-Specific Questions</div>
+    <div class="card-header cyan"><span class="dot"></span>Operations &amp; Service Management</div>
     <div class="card-body">
       <div class="qa">
         <div class="q">What's the difference between monitoring and observability?</div>
@@ -1479,8 +1489,8 @@
       </div>
       <hr class="divider">
       <div class="qa">
-        <div class="q">What is an SLA and why does it matter in NOC?</div>
-        <div class="a">Service Level Agreement — defines expected uptime/response times. NOC tracks incidents against SLAs to ensure timely resolution and escalation before breach.</div>
+        <div class="q">What is an SLA and why does it matter?</div>
+        <div class="a">Service Level Agreement — defines expected uptime and response times between a service provider and its customers. Operations teams track incidents against SLAs to ensure timely resolution and escalation before a breach occurs.</div>
       </div>
       <hr class="divider">
       <div class="qa">
@@ -1498,6 +1508,7 @@
         <div class="a"><strong>MTTR</strong> — Mean Time To Repair/Resolve. How quickly issues are fixed.<br>
         <strong>MTBF</strong> — Mean Time Between Failures. How reliable a system is.</div>
       </div>
+      <div class="tip">💡 When handling a P1, communicate early and often even if you have nothing new to report. Silence is interpreted as inaction. A brief "still investigating, no update yet" every 15 minutes is far better than going dark for an hour.</div>
     </div>
   </div>
 
@@ -1519,7 +1530,7 @@
       <div class="qa">
         <div class="q">Incident lifecycle</div>
         <div class="a">
-          <strong>1. Detection</strong> — alert fires, user reports, NOC observes<br>
+          <strong>1. Detection</strong> — alert fires, user report, or engineer observes<br>
           <strong>2. Triage</strong> — assess severity, scope, and impact<br>
           <strong>3. Escalation</strong> — engage correct team per runbook<br>
           <strong>4. Communication</strong> — notify stakeholders, update status page<br>
@@ -1577,6 +1588,7 @@
           Every change needs: rollback plan, test plan, communication to affected parties, maintenance window, and post-change verification.
         </div>
       </div>
+      <div class="tip">💡 The timeline section of a post-mortem is often the most valuable part. Being able to pinpoint exactly when an issue started (often before anyone noticed), how long detection took, and how long each action took reveals where process improvements will have the most impact.</div>
     </div>
   </div>
 
@@ -1733,7 +1745,7 @@
           <span class="tag tag-cyan">kubectl rollout restart deployment/name</span> Rolling restart
         </div>
       </div>
-      <div class="tip">💡 In a NOC/SRE context you're more likely to be reading logs and restarting pods than writing manifests. Focus on logs, describe, and exec — those are your first-response tools.</div>
+      <div class="tip">💡 In most operational roles you'll spend more time reading logs and restarting pods than writing manifests. <code>logs</code>, <code>describe</code>, and <code>exec</code> are your first-response tools for Kubernetes incidents.</div>
     </div>
   </div>
 
@@ -1964,7 +1976,8 @@ with open("/var/log/syslog") as f:
           <span class="tag tag-cyan">vagrant halt / destroy</span> Stop or delete VMs
         </div>
       </div>
-      <div class="tip">💡 Your existing lab experience with Avaya, Cisco, Teams etc. is essentially virtualisation work — you already understand the networking side. KVM/virsh commands are the main gap to fill.</div>
+      
+      <div class="tip">💡 The most common networking issue with KVM VMs is forgetting to set the bridge interface up, or having the wrong VLAN on the bridge. If a VM has an IP but can't reach the outside, check <code>bridge fdb show</code> and verify the physical NIC is a member of the bridge.</div>
     </div>
   </div>
 
@@ -2036,6 +2049,7 @@ with open("/var/log/syslog") as f:
           <strong>Read-only filesystem</strong> — kernel remounts FS read-only on IO errors to prevent corruption. Check <code>dmesg</code> for disk errors. May need <code>fsck</code> on next boot.
         </div>
       </div>
+      <div class="tip">💡 Disk space issues on production systems are almost always caused by a handful of culprits: runaway application logs that aren't being rotated, large core dump files in <code>/var/crash</code>, or a database that's grown unexpectedly. <code>du -sh /* | sort -rh | head</code> finds the offender in seconds.</div>
     </div>
   </div>
 
@@ -2120,6 +2134,7 @@ with open("/var/log/syslog") as f:
           <span class="tag tag-cyan">chage -E 2026-12-31 username</span> Set account expiry date
         </div>
       </div>
+      <div class="tip">💡 Never edit <code>/etc/sudoers</code> directly with a text editor — always use <code>visudo</code>. A syntax error in sudoers can lock all users out of sudo on the system, potentially requiring console or recovery mode access to fix.</div>
     </div>
   </div>
 
