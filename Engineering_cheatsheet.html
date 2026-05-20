@@ -900,6 +900,102 @@
     </div>
   </div>
 
+  <!-- DEEP PACKET INSPECTION -->
+  <div class="card">
+    <div class="card-header cyan"><span class="dot"></span>Deep Packet Inspection (DPI)</div>
+    <div class="card-body">
+      <div class="qa">
+        <div class="q">What is Deep Packet Inspection?</div>
+        <div class="a">DPI examines the <strong>full content of network packets</strong> — beyond just the header (source/dest IP, ports) — looking at the payload data at L4–L7. Used for troubleshooting, performance analysis, security monitoring, application identification, and compliance. Contrast with <strong>shallow inspection</strong> which only reads headers.</div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">DPI vs packet capture vs flow data</div>
+        <div class="a">
+          <strong>Flow data (NetFlow/IPFIX)</strong> — metadata only. Who talked to whom, how much, which protocol. No payload. Low storage cost. Good for traffic analysis and anomaly detection.<br><br>
+          <strong>Packet capture (pcap)</strong> — full packet headers and payload. High fidelity. High storage cost. Needed for root cause analysis.<br><br>
+          <strong>DPI</strong> — real-time inspection and classification of full packet payloads, often at line rate. Used in NGFWs, IDS/IPS, WAN optimisers, and dedicated probes (NetScout, Gigamon).
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">What can DPI identify that basic inspection can't?</div>
+        <div class="a">
+          — <strong>Application identification</strong> — distinguish Skype from WhatsApp even on the same port<br>
+          — <strong>Encrypted traffic classification</strong> — identify TLS application via JA3 fingerprint, SNI, or certificate metadata without decrypting<br>
+          — <strong>VoIP codec and quality issues</strong> — decode RTP streams, measure jitter per flow, identify codec mismatches<br>
+          — <strong>Malformed protocol detection</strong> — SIP headers that violate RFC, malformed RTP sequences<br>
+          — <strong>Data exfiltration patterns</strong> — unusual payload sizes or encoding in otherwise legitimate-looking traffic<br>
+          — <strong>Tunnelled protocols</strong> — HTTP tunnelling, DNS-over-HTTPS masking C2 traffic
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">DPI in VoIP troubleshooting</div>
+        <div class="a">
+          DPI is the most powerful tool for VoIP fault diagnosis — it can simultaneously decode signalling and media:<br><br>
+          — Decode SIP INVITE/200 OK and extract SDP to verify negotiated codec, IP, and port<br>
+          — Track RTP streams end-to-end and measure per-packet jitter, loss, and out-of-order delivery<br>
+          — Identify DTMF method (in-band, RFC 2833/4733, SIP INFO) and verify it's consistent across both legs<br>
+          — Detect RTP payload type mismatches (codec advertised in SDP doesn't match what's in packets)<br>
+          — Measure post-dial delay and correlate with SIP timing between INVITE and 180 Ringing<br>
+          — Confirm SRTP key exchange in SDES or DTLS and flag unencrypted media where SRTP expected
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">Key DPI tools</div>
+        <div class="a">
+          <strong>Wireshark</strong> — the standard open-source protocol analyser. Decodes 2000+ protocols. Essential for fault analysis. Use <em>Telephony → RTP → Stream Analysis</em> for VoIP.<br><br>
+          <strong>tcpdump</strong> — lightweight CLI capture tool. Capture to pcap, open in Wireshark. Invaluable on headless Linux systems.<br><br>
+          <strong>NetScout nGeniusONE / Infinistream</strong> — enterprise DPI platform. Passive probes on SPAN/TAP feeds. Decodes application protocols including SIP/RTP at scale, generates call quality metrics, supports compliance recording verification.<br><br>
+          <strong>Gigamon</strong> — network visibility fabric. Aggregates, filters, and replicates traffic from SPAN/TAPs to multiple monitoring tools simultaneously. Not a DPI tool itself but feeds DPI platforms.<br><br>
+          <strong>nDPI</strong> — open-source DPI library used in ntopng and similar tools. Application-layer protocol identification.<br><br>
+          <strong>Zeek (formerly Bro)</strong> — network analysis framework. Generates structured logs from traffic (conn.log, dns.log, http.log, sip.log). Excellent for security monitoring and protocol-level visibility without raw pcap overhead.
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">Network TAPs vs SPAN ports for DPI feeds</div>
+        <div class="a">
+          <strong>SPAN port</strong> — switch copies traffic to a monitoring port in software. Easy to configure, no extra hardware. Can drop packets under high load — switch CPU is shared. May miss traffic if buffer overflows.<br><br>
+          <strong>Network TAP (Test Access Point)</strong> — passive optical or electrical device inserted inline. Splits a copy of all traffic to a monitoring port in hardware. <strong>Zero packet loss</strong>, completely passive, no impact on production traffic. The correct choice for compliance-grade DPI and recording assurance.<br><br>
+          Gigamon aggregation TAPs can combine feeds from multiple links and forward to multiple tools simultaneously — one physical TAP feeds IDS, DPI, and recording infrastructure at once.
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">Wireshark — essential display filters for DPI work</div>
+        <div class="a">
+          <span class="tag tag-cyan">sip</span> All SIP traffic<br>
+          <span class="tag tag-cyan">rtp</span> All RTP streams<br>
+          <span class="tag tag-cyan">sip || rtp</span> Both signalling and media<br>
+          <span class="tag tag-cyan">sip.Method == "INVITE"</span> INVITE messages only<br>
+          <span class="tag tag-cyan">sip.Status-Code == 486</span> Busy responses<br>
+          <span class="tag tag-cyan">ip.addr == 10.0.0.1</span> Traffic to/from specific host<br>
+          <span class="tag tag-cyan">tcp.analysis.retransmission</span> TCP retransmits<br>
+          <span class="tag tag-cyan">dns.flags.rcode != 0</span> DNS errors<br>
+          <span class="tag tag-cyan">frame.time_delta > 0.1</span> Gaps between packets &gt;100ms<br>
+          <span class="tag tag-cyan">!(arp || dns || icmp)</span> Exclude noise for cleaner view
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="qa">
+        <div class="q">Reading a packet in Wireshark — layer by layer</div>
+        <div class="a">
+          Each packet expands into protocol layers in the detail pane:<br><br>
+          <strong>Frame</strong> — arrival time, captured length, interface<br>
+          <strong>Ethernet II</strong> — src/dst MAC, EtherType<br>
+          <strong>Internet Protocol</strong> — src/dst IP, TTL, DSCP marking, protocol<br>
+          <strong>TCP/UDP</strong> — src/dst ports, flags (TCP), sequence numbers<br>
+          <strong>Application layer</strong> — decoded protocol (SIP, RTP, HTTP, DNS)<br><br>
+          For VoIP: check DSCP in the IP header (should be EF/46 for RTP), verify SDP content in SIP messages, and use <em>Telephony → RTP → Stream Analysis</em> to plot jitter and loss graphically.
+        </div>
+      </div>
+      <div class="tip">💡 Your NetScout and Gigamon experience is directly relevant here — being able to articulate how TAP/SPAN feeds work, what NetScout's Infinistream does with that traffic, and how you've used DPI to diagnose real-world VoIP and WAN issues is a genuine differentiator in any network or NOC role.</div>
+    </div>
+  </div>
+
   <div style="grid-column:1/-1;height:0;padding:0;margin:0;" id="section-voice"></div>
   <div class="section-header" style="color:#1a7f3c; background:#dafbe1;">VOICE — VoIP, UC & TRADING</div>
 
